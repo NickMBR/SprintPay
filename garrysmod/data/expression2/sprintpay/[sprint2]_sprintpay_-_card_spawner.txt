@@ -1,0 +1,21 @@
+#[
+    N!koSystems
+    Sprint2 
+]#
+
+@name [Sprint2] SprintPay - Card Spawner
+@inputs SPAWN
+@persist CARD:entity
+
+if (first() || dupefinished()) {
+    entity():setAlpha(0)
+}
+
+interval(1000)
+
+if (SPAWN) {
+    CARD = propSpawn("models/sprops/rectangles_thin/size_1/rect_3x6x1_5.mdl", entity():pos() + vec(0, 10, -10), 0)
+    if (CARD:isValid()) {
+        CARD:setName("SPRINTPAY_CARD")
+    }
+}

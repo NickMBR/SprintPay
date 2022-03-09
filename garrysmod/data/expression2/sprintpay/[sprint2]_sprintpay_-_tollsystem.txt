@@ -1,0 +1,85 @@
+#[
+    N!koSystems
+    Sprint2 
+]#
+
+@name [Sprint2] SprintPay - TollSystem
+@outputs [CARD]:entity [Open Close]:number
+@persist [POSA POSB]:vector [E2]:entity [CARD_CONNECTED DISABLE_AREA]:number
+@trigger 
+
+if (first() | dupefinished())
+{
+    # DISABLE THE RED DETECTION AREA (DEFAULT = 0)
+    DISABLE_AREA = 0 # 1 IF DISABLED | 0 IF ENABLED
+	
+    # EDIT BELOW TO IMPROVE, LET ME KNOW YOUR CHANGES!
+    E2 = entity()
+    
+    # CREATES HINGES FOR THE DETECTION AREA
+    POSA = E2:toWorld(vec(30, 300, 10))
+    POSB = E2:toWorld(vec(-80, -150, 260))
+
+    holoCreate(1, POSA)
+    holoScale(1, vec(0.5))
+    holoAlpha(1, 0)
+
+    holoCreate(2, POSB)
+    holoScale(2, vec(0.5))
+    holoAlpha(2, 0)
+    
+    local HOLO_POSA = holoEntity(1)
+    local HOLO_POSB = holoEntity(2)
+
+    # CREATES THE DETECTION AREA
+    holoCreate(3, (POSA + POSB) / 2)
+    holoScaleUnits(3, vec(POSA:z() - POSB:z(), POSA:y() - POSB:y(), POSA:x() - POSB:x()))
+    holoAlpha(3, DISABLE_AREA > 0 ? 0 : 50)
+}
+
+# TOO MUCH?
+interval(100)
+
+if (findCanQuery()){
+    # SEARCH FOR THE CARD (PROP) BY THE MODEL BY THE AREA
+    findIncludeModel("models/sprops/rectangles_thin/size_1/rect_3x6x1_5.mdl")
+    findInBox(POSA, POSB)
+
+    if (find()){
+        holoColor(3, vec(0,255,0))
+        
+        # IF THE CARD IS FOUND, SEARCH BY THE SPECIFIC ENTITY NAME (SEE ALSO: SetName())
+        local CARD_ID = find():getName()
+        if (CARD_ID != "" && CARD_ID:find("SPRINTPAY_CARD")) {
+            CARD = find()
+        }
+        else { CARD = noentity() }
+    }
+    else { CARD = noentity() }
+}
+
+# THIS IS SELF EXPLANATORY, ISN'T IT?
+if (CARD != noentity() && !CARD:isFrozen() && !CARD:isPlayerHolding()) {
+    holoColor(3,vec(0,255,0))
+    CARD_CONNECTED = 1
+}
+else {
+    holoColor(3,vec(255,0,0))
+    CARD_CONNECTED = 0
+}
+
+# CARD DETECTION
+if (changed(CARD_CONNECTED)) {
+    if (CARD_CONNECTED && !Open && CARD != noentity()) {
+        Open = 1
+        Close = 0
+    }
+    elseif (!CARD_CONNECTED && Open) {
+        timer("close", 1000)
+    }
+}
+
+if (clk("close")) {
+    Open = 0
+    Close = 1
+}

@@ -1,0 +1,132 @@
+#[
+    N!koSystems
+    Sprint2
+]#
+
+@name [Sprint2] SprintPay - Panel
+@inputs E:wirelink [User]:entity
+@outputs Spawner [Target]:entity
+@persist ShouldSpawn [Cursor PosA PosB]:vector2 PAGE:string [Target]:entity
+@model models/expression 2/cpu_interface_mini.mdl
+
+if (first() | duped())
+{
+    # IF THE SCREEN IS BUGGED AND YOU ARE READING THIS, JUST CLICK UPLOAD & EXIT!
+    # EDIT BELOW TO IMPROVE, LET ME KNOW YOUR CHANGES!
+    E:egpClear()
+    Target = noentity()
+    ShouldSpawn = 0
+
+    timer("inicializa", randint(500, 1000))
+}
+
+interval(250)
+E:egpDrawTopLeft(1)
+
+# RESETS FOR THE NEXT SCREEN USER
+if (Target == noentity()) {
+    if (User:keyUse()) {
+        Target = User
+    }
+}
+
+# SETS THE SCREEN USER
+Cursor = E:egpCursor(Target)
+
+# DETECTS INTERACTIONS BY THE CURSOR ON A SPECIFIC DRAWN EGP OBJECT
+function number buttonPress(BtnID)
+{
+    PosA = E:egpPos(BtnID)
+    PosB = E:egpPos(BtnID) + E:egpSize(BtnID)
+    
+    if (Target:keyUse() && inrange(Cursor, PosA, PosB)) { return 1 }
+
+    return 0
+    # IMPROVE THIS BY ANIMATING THE HOVER, PRESSED AND UNPRESSED MOTIONS OF THE CURSOR
+}
+
+# MAYBE THIS DRAWN FUNCTION ISN'T NECESSARY, BUT IT HELPS TO DRAWN ON SPAWN
+function drawPanel()
+{
+    E:egpClear()
+
+    # ALL THE POSITIONS BELOW ARE PLACED INDIVIDUALLY, THIS CAN BE IMPROVED!
+    E:egpBox(1, vec2(0, 0), vec2(512,512))
+    E:egpColor(1, vec(40))
+    
+    E:egpText(2, "N!kO", vec2(256, 20))
+    E:egpAlign(2, 1)
+    E:egpSize(2, 90)
+    E:egpFont(2, "Coolvetica")
+    E:egpColor(2, vec(230))
+    
+    E:egpText(3, "Systems", vec2(256, 80))
+    E:egpAlign(3, 1)
+    E:egpSize(3, 40)
+    E:egpFont(3, "Coolvetica")
+    E:egpColor(3, vec(230))
+    
+    E:egpText(4, "SprintPay Card", vec2(256, 200))
+    E:egpAlign(4, 1)
+    E:egpSize(4, 45)
+    E:egpFont(4, "Coolvetica")
+    E:egpColor(4, vec(230))
+    
+    E:egpBox(5, vec2(128, 250), vec2(256, 40))
+    E:egpColor(5, vec(180, 40, 40))
+    
+    E:egpText(6, "Press to Spawn", vec2(256, 255))
+    E:egpAlign(6, 1)
+    E:egpSize(6, 30)
+    E:egpFont(6, "Coolvetica")
+    E:egpColor(6, vec(230))
+    
+    E:egpText(7, "Instructions:", vec2(256, 345))
+    E:egpAlign(7, 1)
+    E:egpSize(7, 25)
+    E:egpFont(7, "Coolvetica")
+    E:egpColor(7, vec(230))
+    
+    E:egpText(8, "1. Spawn it", vec2(256, 370))
+    E:egpAlign(8, 1)
+    E:egpSize(8, 20)
+    E:egpFont(8, "Coolvetica")
+    E:egpColor(8, vec(230))
+    
+    E:egpText(9, "2. Weld it to your vehicle", vec2(256, 390))
+    E:egpAlign(9, 1)
+    E:egpSize(9, 20)
+    E:egpFont(9, "Coolvetica")
+    E:egpColor(9, vec(230))
+    
+    E:egpText(10, "3. Done", vec2(256, 410))
+    E:egpAlign(10, 1)
+    E:egpSize(10, 20)
+    E:egpFont(10, "Coolvetica")
+    E:egpColor(10, vec(230))
+}
+
+# SOMEBODY PRESSED THE BUTTON
+if (buttonPress(5)) {
+    timer("spawnCard", 200)
+}
+
+# SCREEN WAS SPAWNED
+if (clk("inicializa")) {
+    E:egpClear()
+    drawPanel()
+}
+
+# CARD WAS SPAWNED
+if (clk("spawnCard")) {
+    ShouldSpawn = 1
+    stoptimer("spawnCard")
+}
+
+if (changed(ShouldSpawn) && ShouldSpawn) {
+    ShouldSpawn = 0
+    Spawner = 1
+}
+else {
+    Spawner = 0
+}
