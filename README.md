@@ -6,9 +6,9 @@ This system is for the map [Sprint Mesa](https://steamcommunity.com/sharedfiles/
 
 ## Requirements
 You need the following addons to use the SprintPay system:
-[Sprops](steam://openurl/https://steamcommunity.com/sharedfiles/filedetails/?id=173482196)
-[Wiremod](steam://openurl/https://steamcommunity.com/sharedfiles/filedetails/?id=173482196)
-[Advanced Duplicator 2](steam://openurl/https://steamcommunity.com/sharedfiles/filedetails/?id=173482196)
+[Sprops](https://steamcommunity.com/sharedfiles/filedetails/?id=173482196)
+[Wiremod](https://steamcommunity.com/sharedfiles/filedetails/?id=173482196)
+[Advanced Duplicator 2](https://steamcommunity.com/sharedfiles/filedetails/?id=173482196)
 
 ## Installation
 After subscribing to all the required addons, download the repo zip file.
